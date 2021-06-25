@@ -1,28 +1,24 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Observable, fromEvent } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CoursesService } from '../services/courses.service';
 
 @Component({
-  selector: 'about',
+  selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
-export class AboutComponent implements AfterViewInit {
-  @ViewChild('imageElement')
-  image: ElementRef;
+export class AboutComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
 
-  constructor() { }
+  constructor(private coursesService: CoursesService) { }
 
-  ngAfterViewInit() {
-    const mouseObservable = fromEvent(this.image.nativeElement, 'click');
-    mouseObservable.pipe(
-      tap(() => setTimeout(() => {
-        let counter = 0;
-        setInterval(() => {
-          console.log(counter);
-          counter++;
-        }, 1000);
-      }, 3000))
-    );
+  ngOnInit() {
+    const courses$ = this.coursesService.getCourses();
+    this.subscription = this.coursesService.getCourses().subscribe(
+      (_) => {});
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
