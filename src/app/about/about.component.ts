@@ -1,6 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { CoursesService } from '../services/courses.service';
+import { Observer, Subscription, Observable } from 'rxjs';
+
+const coursesApiUrl = 'api/courses';
+const coursesResponseSubscriber = (observer: Observer<string>) => {
+  fetch(coursesApiUrl)
+    .then(response => response.json())
+    .then(json => {
+      observer.next(json);
+      observer.complete();
+    })
+    .catch(err => {
+      observer.error(err);
+    });
+};
 
 @Component({
   selector: 'app-about',
@@ -10,12 +22,12 @@ import { CoursesService } from '../services/courses.service';
 export class AboutComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
-  constructor(private coursesService: CoursesService) { }
-
   ngOnInit() {
-    const courses$ = this.coursesService.getCourses();
-    this.subscription = this.coursesService.getCourses().subscribe(
-      (_) => {});
+    const courses$ = new Observable(coursesResponseSubscriber);
+    this.subscription = courses$.subscribe({
+      next: (courses: string) => console.log(courses),
+      complete: () => console.log('completed')
+    });
   }
 
   ngOnDestroy() {
