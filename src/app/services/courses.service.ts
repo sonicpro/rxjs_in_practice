@@ -6,7 +6,7 @@ import { Course } from '../model/course';
 
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
-  private apiUrl = 'api/heroes';
+  private apiUrl = 'api/courses';
 
   constructor(
     private http: HttpClient
