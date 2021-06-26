@@ -1,5 +1,6 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import { Subscription } from 'rxjs';
+import {Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Course } from '../model/course';
 import { CoursesObservableService } from '../services/courses-observable.service';
 
@@ -8,26 +9,19 @@ import { CoursesObservableService } from '../services/courses-observable.service
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  beginnerCourses: Course[];
-  advancedCourses: Course[];
-
-  private subscription: Subscription;
+export class HomeComponent implements OnInit {
+  beginnerCourses$: Observable<Course[]>;
+  advancedCourses$: Observable<Course[]>;
 
   constructor(private coursesObservableService: CoursesObservableService) {}
 
     ngOnInit() {
       const coursesArray$ = this.coursesObservableService.getCoursesObservable();
-      this.subscription = coursesArray$.subscribe({
-        next: (courses: Course[]) => {
-          this.beginnerCourses = courses.filter(course => course.category === 'BEGINNER');
-          this.advancedCourses = courses.filter(course => course.category === 'ADVANCED');
-        },
-        complete: () => console.log('completed')
-      });
-    }
-
-    ngOnDestroy() {
-      this.subscription.unsubscribe();
+      this.beginnerCourses$ = coursesArray$.pipe(
+        map(allCourses => allCourses.filter(c => c.category === 'BEGINNER'))
+      );
+      this.advancedCourses$ = coursesArray$.pipe(
+        map(allCourses => allCourses.filter(c => c.category === 'ADVANCED'))
+      );
     }
 }
