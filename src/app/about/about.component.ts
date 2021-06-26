@@ -1,18 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observer, Subscription, Observable } from 'rxjs';
-
-const coursesApiUrl = 'api/courses';
-const coursesResponseSubscriber = (observer: Observer<string>) => {
-  fetch(coursesApiUrl)
-    .then(response => response.json())
-    .then(json => {
-      observer.next(json);
-      observer.complete();
-    })
-    .catch(err => {
-      observer.error(err);
-    });
-};
+import { Subscription } from 'rxjs';
+import { Course } from '../model/course';
+import { CoursesObservableService } from '../services/courses-observable.service';
 
 @Component({
   selector: 'app-about',
@@ -22,10 +11,12 @@ const coursesResponseSubscriber = (observer: Observer<string>) => {
 export class AboutComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
+  constructor(private coursesObservableService: CoursesObservableService) {}
+
   ngOnInit() {
-    const courses$ = new Observable(coursesResponseSubscriber);
-    this.subscription = courses$.subscribe({
-      next: (courses: string) => console.log(courses),
+    const coursesArray$ = this.coursesObservableService.getCoursesObservable();
+    this.subscription = coursesArray$.subscribe({
+      next: (courses: Course[]) => console.log(courses),
       complete: () => console.log('completed')
     });
   }
