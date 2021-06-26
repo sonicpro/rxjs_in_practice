@@ -1,6 +1,6 @@
 import {Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { Course } from '../model/course';
 import { CoursesObservableService } from '../services/courses-observable.service';
 
@@ -16,7 +16,9 @@ export class HomeComponent implements OnInit {
   constructor(private coursesObservableService: CoursesObservableService) {}
 
     ngOnInit() {
-      const coursesArray$ = this.coursesObservableService.getCoursesObservable();
+      const coursesArray$ = this.coursesObservableService.getCoursesObservable().pipe(
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
       this.beginnerCourses$ = coursesArray$.pipe(
         map(allCourses => allCourses.filter(c => c.category === 'BEGINNER'))
       );
