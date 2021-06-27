@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { Course } from '../model/course';
 
 const coursesApiUrl = 'api/courses';
-const coursesResponseSubscriber = (observer: Observer<Response>) => {
+const coursesResponseSubscriber = (observer: Observer<any>) => {
   // Using signal property of fetch API to cancel the ongoing HTTP request.
   const controller = new AbortController();
   const signal = controller.signal;

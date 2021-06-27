@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, of, concat, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CoursesObservableService } from '../services/courses-observable.service';
 
 @Component({
