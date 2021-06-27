@@ -4,8 +4,12 @@ import { map } from 'rxjs/operators';
 import { Course } from '../model/course';
 
 const coursesApiUrl = 'api/courses';
-const coursesResponseSubscriber = (observer: Observer<any>) => {
-  fetch(coursesApiUrl)
+const coursesResponseSubscriber = (observer: Observer<Response>) => {
+  // Using signal property of fetch API to cancel the ongoing HTTP request.
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  fetch(coursesApiUrl, { signal })
     .then(response => response.json())
     .then(json => {
       observer.next(json);
@@ -14,6 +18,10 @@ const coursesResponseSubscriber = (observer: Observer<any>) => {
     .catch(err => {
       observer.error(err);
     });
+
+    // Return the function. This function is executed from the client code via
+    // unsubscribe() method called on the subscription.
+    return () => controller.abort();
 };
 
 @Injectable({ providedIn: 'root' })
