@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, of, concat, interval } from 'rxjs';
 import { Course } from '../model/course';
 import { CoursesObservableService } from '../services/courses-observable.service';
 
@@ -14,11 +14,11 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(private coursesObservableService: CoursesObservableService) {}
 
   ngOnInit() {
-    const coursesArray$ = this.coursesObservableService.getCoursesObservable();
-    this.subscription = coursesArray$.subscribe({
-      next: (courses: Course[]) => console.log(courses),
-      complete: () => console.log('completed')
-    });
+    const source1$ = interval(1000);
+    const source2$ = of(4, 5, 6);
+    const source3$ = of(7, 8, 9);
+    const result$ = concat(source1$, source2$, source3$);
+    this.subscription = result$.subscribe(console.log);
   }
 
   ngOnDestroy() {
