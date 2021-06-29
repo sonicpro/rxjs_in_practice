@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { Course } from '../model/course';
 import { Observable, fromEvent, Subscription, concat } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged, switchMap, startWith, take } from 'rxjs/operators';
 import { Lesson } from '../model/lesson';
 import { createHttpObservable } from '../common/util';
 
@@ -34,17 +34,13 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // Produces search term values as the user types in the search box.
-    const searchResult$: Observable<Lesson[]> = fromEvent(this.input.nativeElement, 'input').pipe(
+    this.lessons$ = fromEvent(this.input.nativeElement, 'input').pipe(
       map((e: InputEvent) => (e.target as HTMLInputElement).value),
+      startWith(''),
       debounceTime(400),
       distinctUntilChanged(),
       switchMap((searchTerm: string) => this.produceNewHttpObservable(searchTerm))
     );
-
-    // This observable executes once on AfterViewInit and terminates.
-    const initialLessonList$: Observable<Lesson[]> = this.produceNewHttpObservable();
-
-    this.lessons$ = concat(initialLessonList$, searchResult$);
   }
 
   private produceNewHttpObservable(searchTerm: string = ''): Observable<Lesson[]> {
