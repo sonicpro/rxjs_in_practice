@@ -48,17 +48,20 @@ export class CourseDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    // const autosaveObservable = this.form.valueChanges.pipe(
-    //   filter(() => this.form.valid),
-    //   concatMap(formValue => this.saveCourse(this.course.id, formValue))
-    // );
+    const autosaveObservable = this.form.valueChanges.pipe(
+      filter(() => this.form.valid),
+      concatMap(formValue => this.saveCourse(this.course.id, formValue))
+    );
 
-    // this.autoSaveSubscription = autosaveObservable.subscribe(responseObserver);
+    // this.saveCourse() returns the saved course data in <Observable> Response.
+    // Log it to console using the next() method of "responseObserver".
+    this.autoSaveSubscription = autosaveObservable.subscribe(responseObserver);
   }
 
   ngAfterViewInit() {
     const saveClickObservable$: Observable<MouseEvent> = fromEvent(this.saveButton.nativeElement, 'click');
     const saveChangesObservable$ = saveClickObservable$.pipe(
+      // Ignore MouseEvents from the source observable until the saveCourse() observable terminates.
       exhaustMap(() => this.saveCourse(this.course.id, this.form.value))
     );
     this.subscription = saveChangesObservable$.subscribe(responseObserver);
