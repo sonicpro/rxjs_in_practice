@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-material-course": {
+    "rxjs-course": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-material-course:build"
+            "browserTarget": "rxjs-course:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-material-course:build:production"
+              "browserTarget": "rxjs-course:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-material-course:build"
+            "browserTarget": "rxjs-course:build"
           }
         },
         "test": {
@@ -90,20 +90,17 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
       }
     },
-    "angular-material-course-e2e": {
+    "rxjs-course-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -112,24 +109,22 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "angular-material-course:serve"
+            "devServerTarget": "rxjs-course:serve"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
       }
     }
   },
-  "defaultProject": "angular-material-course",
+  "defaultProject": "rxjs-course",
   "schematics": {
     "@schematics/angular:component": {
       "style": "scss"
@@ -139,6 +134,7 @@
     }
   },
   "cli": {
-    "analytics": "cfcb7608-e88b-4213-8e97-1621fa16315e"
+    "analytics": "cfcb7608-e88b-4213-8e97-1621fa16315e",
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }
