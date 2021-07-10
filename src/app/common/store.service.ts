@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, pipe } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
-import { map, shareReplay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Course } from '../model/course';
 import { createHttpObservable } from './util';
 
@@ -9,8 +9,7 @@ import { createHttpObservable } from './util';
 export class Store {
   private subject: BehaviorSubject<Course[]> = new BehaviorSubject([]);
   private coursesResponse$: Observable<Course[]> = createHttpObservable('/api/courses').pipe(
-    map(jsObject => (jsObject?.payload ?? []).map((c: any) => c as Course)),
-    shareReplay()
+    map(jsObject => (jsObject?.payload ?? []).map((c: any) => c as Course))
   );
 
   private courses$: Observable<Course[]> = this.subject.asObservable();

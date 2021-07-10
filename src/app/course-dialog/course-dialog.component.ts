@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, ViewChild } fr
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Course} from '../model/course';
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
-import { fromEvent, Observable, Subscription } from 'rxjs';
+import { fromEvent, Observable, Subscription, of } from 'rxjs';
 import { exhaustMap } from 'rxjs/operators';
 import { Store } from '../common/store.service';
 
@@ -49,8 +49,11 @@ export class CourseDialogComponent implements AfterViewInit, OnDestroy {
     ngAfterViewInit() {
       const saveClickObservable$: Observable<MouseEvent> = fromEvent(this.saveButton.nativeElement, 'click');
       const saveChangesObservable$ = saveClickObservable$.pipe(
-        // Ignore MouseEvents from the source observable until the saveCourse() observable terminates.
-        exhaustMap(() => this.saveCourse(this.course.id, this.form.value))
+        // Ignore MouseEvents from the source observable until the close() observable terminates.
+        exhaustMap(() => {
+          this.saveCourse(this.course.id, this.form.value);
+          return this.close();
+        })
       );
       this.subscription = saveChangesObservable$.subscribe(responseObserver);
     }
@@ -59,8 +62,9 @@ export class CourseDialogComponent implements AfterViewInit, OnDestroy {
       this.subscription.unsubscribe();
     }
 
-    close() {
+    close(): Observable<Response> {
       this.dialogRef.close();
+      return of(new Response());
     }
 
     private saveCourse(id: number, changes: any): Observable<Response> {
