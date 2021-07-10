@@ -25,9 +25,12 @@ export class Store {
     // Apply store pattern, i.e. take the existing state and replace it with the new modified state.
     const currentState: Course[] = this.subject.getValue();
 
-    const newUpdatedCourse: Course = { ...(currentState.filter(c => c.id === id)[0]), ...changes };
+    const changedCourseIndex = currentState.findIndex(c => c.id === id);
+    const newUpdatedCourse: Course = { ...currentState[changedCourseIndex], ...changes };
+    const stateCopy = currentState.slice(0);
+    stateCopy[changedCourseIndex] = newUpdatedCourse;
     // Notify all subscribers of the change:
-    this.subject.next([ ...(currentState.filter(c => c.id !== id)), newUpdatedCourse ]);
+    this.subject.next(stateCopy);
 
     return fromPromise(fetch(`/api/courses/${id}`, {
       method: 'PUT',
