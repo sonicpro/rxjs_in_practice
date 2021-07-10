@@ -40,4 +40,8 @@ export class Store {
       }
     }));
   };
+
+  getCourseById: (courseId: number) => Observable<Course> = (courseId: number) => this.courses$.pipe(
+    map(courses => courses.find(c => c.id === courseId))
+  );
 }
