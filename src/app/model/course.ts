@@ -1,3 +1,4 @@
+import { Moment } from 'moment';
 
 
 export interface Course {
@@ -8,4 +9,5 @@ export interface Course {
     longDescription: string;
     category: string;
     lessonsCount: number;
+    releasedAt: Moment;
 }
