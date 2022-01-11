@@ -1,5 +1,8 @@
 {
   "compileOnSave": false,
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+  },
   "compilerOptions": {
     "module": "esnext",
     "outDir": "./dist/out-tsc",
